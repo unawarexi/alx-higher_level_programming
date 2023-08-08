@@ -4,13 +4,14 @@
 #include <stdlib.h>
 
 /**
- * struct listint_s - singly linked list
- * @n: integer
- * @next: points to the next node
+ * Structure for a singly linked list
+ * @n: an integer value
+ * @next: points to the next node in the list
  *
- * Description: singly linked list node structure
+ * Description: Defines the structure of a node in a singly linked list
  * 
  */
+
 typedef struct listint_s
 {
     int n;
