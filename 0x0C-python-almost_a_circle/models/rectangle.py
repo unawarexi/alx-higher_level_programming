@@ -1,196 +1,106 @@
 #!/usr/bin/python3
-"""
-    Rectangle Module
-"""
+'''Module for Rectangle class.'''
 from models.base import Base
 
 
 class Rectangle(Base):
-    """Defines a Rectangle class."""
-    def __init__(self, width: int, height: int, x=0, y=0, id=None):
-        """
-        Initializes a Rectangle object.
+    '''A Rectangle class.'''
 
-        Args:
-            width (int): The width of the rectangle.
-            height (int): The height of the rectangle.
-            x (int, optional): The x-coordinate of the rectangle's position.
-                            Defaults to 0.
-            y (int, optional): The y-coordinate of the rectangle's position.
-                            Defaults to 0.
-            id (optional): The identifier of the rectangle. Defaults to None.
-        """
+    def __init__(self, width, height, x=0, y=0, id=None):
+        '''Constructor.'''
         super().__init__(id)
-        self._validate_attr(width, "width")
-        self._validate_attr(height, "height")
-        self._validate_attr(x, "x")
-        self._validate_attr(y, "y")
-        self.__width = width
-        self.__height = height
-        self.__x = x
-        self.__y = y
+        self.width = width
+        self.height = height
+        self.x = x
+        self.y = y
 
-    # >>>>>>>>>>>>>>>>>>>   WIDTH   <<<<<<<<<<<<<<<<<<<<
     @property
-    def width(self) -> int:
-        """
-        int: The width of the rectangle.
-        """
+    def width(self):
+        '''Width of this rectangle.'''
         return self.__width
 
     @width.setter
-    def width(self, value: int):
-        """
-        Sets the width of the rectangle.
-
-        Args:
-            value (int): The new width value.
-        """
-        self._validate_attr(value, "width")
+    def width(self, value):
+        self.validate_integer("width", value, False)
         self.__width = value
 
-    # >>>>>>>>>>>>>>>>>>>   HEIGHT   <<<<<<<<<<<<<<<<<<<<
     @property
-    def height(self) -> int:
-        """
-        int: The height of the rectangle.
-        """
+    def height(self):
+        '''Height of this rectangle.'''
         return self.__height
 
     @height.setter
-    def height(self, value: int):
-        """
-        Sets the height of the rectangle.
-
-        Args:
-            value (int): The new height value.
-        """
-        self._validate_attr(value, "height")
+    def height(self, value):
+        self.validate_integer("height", value, False)
         self.__height = value
 
-    # >>>>>>>>>>>>>>>>>>>   X   <<<<<<<<<<<<<<<<<<<<
     @property
-    def x(self) -> int:
-        """
-        int: The x-coordinate of the rectangle's position.
-        """
+    def x(self):
+        '''x of this rectangle.'''
         return self.__x
 
     @x.setter
-    def x(self, value: int):
-        """
-        Sets the x-coordinate of the rectangle's position.
-
-        Args:
-            value (int): The new x-coordinate value.
-        """
-        self._validate_attr(value, "x")
+    def x(self, value):
+        self.validate_integer("x", value)
         self.__x = value
 
-    # >>>>>>>>>>>>>>>>>>>   Y   <<<<<<<<<<<<<<<<<<<<
     @property
-    def y(self) -> int:
-        """
-        int: The y-coordinate of the rectangle's position.
-        """
+    def y(self):
+        '''y of this rectangle.'''
         return self.__y
 
     @y.setter
-    def y(self, value: int):
-        """
-        Sets the y-coordinate of the rectangle's position.
-
-        Args:
-            value (int): The new y-coordinate value.
-        """
-        self._validate_attr(value, "y")
+    def y(self, value):
+        self.validate_integer("y", value)
         self.__y = value
 
-    def _validate_attr(self, value: int, name: str):
-        """
-        Validates the attribute value.
+    def validate_integer(self, name, value, eq=True):
+        '''Method for validating the value.'''
+        if type(value) != int:
+            raise TypeError("{} must be an integer".format(name))
+        if eq and value < 0:
+            raise ValueError("{} must be >= 0".format(name))
+        elif not eq and value <= 0:
+            raise ValueError("{} must be > 0".format(name))
 
-        Args:
-            value (int): The attribute value to validate.
-            name (str): The name of the attribute.
-        Raises:
-            TypeError: If the value is not an integer.
-            ValueError: If the value is invalid for width,
-                        height, x, or y attributes.
-        """
-        if not isinstance(value, int):
-            err_msg = f"{name} must be an integer"
-            raise TypeError(err_msg)
-
-        if name in {"width", "height"} and value <= 0:
-            err_msg = f"{name} must be > 0"
-            raise ValueError(err_msg)
-
-        if name in {"x", "y"} and value < 0:
-            err_msg = f"{name} must be >= 0"
-            raise ValueError(err_msg)
-
-    def area(self) -> int:
-        """
-        Calculates the area of the rectangle.
-
-        Returns:
-            int: The area of the rectangle.
-        """
-        return self.__height * self.__width
+    def area(self):
+        '''Computes area of this rectangle.'''
+        return self.width * self.height
 
     def display(self):
-        """
-        Displays the rectangle on the console.
-        """
-        for _ in range(self.__y):
-            print()
-        for _ in range(self.__height):
-            print((" " * self.__x) + ("#" * self.__width))
+        '''Prints string representation of this rectangle.'''
+        s = '\n' * self.y + \
+            (' ' * self.x + '#' * self.width + '\n') * self.height
+        print(s, end='')
 
-    def to_dictionary(self) -> dict:
-        """
-        Converts the rectangle to a dictionary representation.
+    def __str__(self):
+        '''Returns string info about this rectangle.'''
+        return '[{}] ({}) {}/{} - {}/{}'.\
+            format(type(self).__name__, self.id, self.x, self.y, self.width,
+                   self.height)
 
-        Returns:
-            dict: A dictionary representing the rectangle.
-        """
-        return {
-            "id": self.id,
-            "width": self.width,
-            "height": self.height,
-            "x": self.x,
-            "y": self.y
-        }
+    def __update(self, id=None, width=None, height=None, x=None, y=None):
+        '''Internal method that updates instance attributes via */**args.'''
+        if id is not None:
+            self.id = id
+        if width is not None:
+            self.width = width
+        if height is not None:
+            self.height = height
+        if x is not None:
+            self.x = x
+        if y is not None:
+            self.y = y
 
     def update(self, *args, **kwargs):
-        """
-        Updates the rectangle's attributes.
+        '''Updates instance attributes via no-keyword & keyword args.'''
+        # print(args, kwargs)
+        if args:
+            self.__update(*args)
+        elif kwargs:
+            self.__update(**kwargs)
 
-        Args:
-            *args: The positional arguments can be used to update id,
-                   width, height, x, and y in that order.
-            **kwargs: The keyword arguments can be used to update any
-                   attribute by specifying the attribute name.
-        """
-        try:
-            if args:
-                attrs = ("id", "width", "height", "x", "y")
-                for idx, arg in enumerate(args):
-                    setattr(self, attrs[idx], arg)
-            else:
-                for key, value in kwargs.items():
-                    setattr(self, key.lower(), value)
-        except (IndexError, AttributeError):
-            return
-
-    def __str__(self) -> str:
-        """
-        Returns a string representation of the rectangle.
-
-        Returns:
-            str: The string representation of the rectangle.
-        """
-        return "[Rectangle] ({}) {}/{} - {}/{}".format(
-            self.id, self.__x, self.__y, self.__width, self.__height
-        )
+    def to_dictionary(self):
+        '''Returns dictionary representation of this class.'''
+        return {"id": self.id, "width": self.__width, "height": self.__height,
+                "x": self.__x, "y": self.__y}
