@@ -1,4 +1,5 @@
 #!/usr/bin/node
+
 // using destruct
 // using slice(2) to start the slice from the third element of the process.argv array,
 // skipping over the node command and the name of the script itself
